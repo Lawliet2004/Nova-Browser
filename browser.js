@@ -40,7 +40,8 @@ class NovaBrowser {
 
     createNewTab(url = 'https://www.google.com') {
         // Security: Validate URL to only allow http and https protocols
-        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        const urlLower = url.toLowerCase();
+        if (!urlLower.startsWith('http://') && !urlLower.startsWith('https://')) {
             console.warn('Invalid URL protocol for new tab, defaulting to Google');
             url = 'https://www.google.com';
         }
@@ -203,19 +204,20 @@ class NovaBrowser {
         const tab = this.tabs.find(t => t.id === this.activeTabId);
         if (tab) {
             let url = this.urlBar.value.trim();
+            const urlLower = url.toLowerCase();
             
             // Security: Validate and sanitize URL to prevent malicious navigation
             // Only allow http and https protocols
-            if (url.toLowerCase().startsWith('javascript:') || 
-                url.toLowerCase().startsWith('data:') ||
-                url.toLowerCase().startsWith('file:') ||
-                url.toLowerCase().startsWith('vbscript:')) {
-                console.warn('Blocked potentially malicious URL:', url);
-                return;
+            const dangerousProtocols = ['javascript:', 'data:', 'file:', 'vbscript:', 'about:', 'blob:'];
+            for (const protocol of dangerousProtocols) {
+                if (urlLower.startsWith(protocol)) {
+                    console.warn('Blocked potentially malicious URL:', url);
+                    return;
+                }
             }
             
             // Add protocol if missing
-            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            if (!urlLower.startsWith('http://') && !urlLower.startsWith('https://')) {
                 // Check if it looks like a domain (contains a dot and no spaces)
                 if (url.includes('.') && !url.includes(' ') && url.indexOf('.') > 0) {
                     url = 'https://' + url;
@@ -225,8 +227,9 @@ class NovaBrowser {
                 }
             }
             
-            // Final validation: ensure URL starts with http or https
-            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            // Final validation: ensure URL starts with http or https (case insensitive)
+            const finalUrlLower = url.toLowerCase();
+            if (!finalUrlLower.startsWith('http://') && !finalUrlLower.startsWith('https://')) {
                 console.warn('Invalid URL protocol:', url);
                 return;
             }

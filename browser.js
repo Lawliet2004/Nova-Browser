@@ -39,6 +39,12 @@ class NovaBrowser {
     }
 
     createNewTab(url = 'https://www.google.com') {
+        // Security: Validate URL to only allow http and https protocols
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            console.warn('Invalid URL protocol for new tab, defaulting to Google');
+            url = 'https://www.google.com';
+        }
+        
         const tabId = `tab-${this.tabCounter++}`;
         
         // Create webview container
@@ -198,15 +204,31 @@ class NovaBrowser {
         if (tab) {
             let url = this.urlBar.value.trim();
             
+            // Security: Validate and sanitize URL to prevent malicious navigation
+            // Only allow http and https protocols
+            if (url.toLowerCase().startsWith('javascript:') || 
+                url.toLowerCase().startsWith('data:') ||
+                url.toLowerCase().startsWith('file:') ||
+                url.toLowerCase().startsWith('vbscript:')) {
+                console.warn('Blocked potentially malicious URL:', url);
+                return;
+            }
+            
             // Add protocol if missing
             if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                // Check if it looks like a domain
-                if (url.includes('.') && !url.includes(' ')) {
+                // Check if it looks like a domain (contains a dot and no spaces)
+                if (url.includes('.') && !url.includes(' ') && url.indexOf('.') > 0) {
                     url = 'https://' + url;
                 } else {
                     // Treat as search query
                     url = 'https://www.google.com/search?q=' + encodeURIComponent(url);
                 }
+            }
+            
+            // Final validation: ensure URL starts with http or https
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                console.warn('Invalid URL protocol:', url);
+                return;
             }
             
             tab.webview.src = url;

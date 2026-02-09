@@ -54,6 +54,18 @@ For the demo version, use these credentials:
 - Custom tab management system
 - Simple authentication system
 
+## Security Considerations
+
+This is a **demo application** with the following security considerations:
+
+1. **Authentication**: Uses hardcoded credentials for demo purposes. In production, implement proper authentication with password hashing, database validation, or OAuth.
+
+2. **Electron Security**: The app uses `nodeIntegration: true` and `contextIsolation: false` for simplicity. In production, these should be changed to more secure defaults with preload scripts.
+
+3. **URL Validation**: The app validates URLs to only allow HTTP/HTTPS protocols, blocking potentially malicious protocols like `javascript:`, `data:`, and `file:`.
+
+4. **Known Vulnerabilities**: The current Electron version (28.0.0) has a moderate severity ASAR integrity bypass vulnerability. For production use, upgrade to Electron 35.7.5 or later.
+
 ## Future Enhancements
 
 - Bookmarks system

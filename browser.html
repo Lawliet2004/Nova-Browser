@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Nova Browser</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Vertical Tabs Sidebar */
+        .tabs-sidebar {
+            width: 250px;
+            background: #2c3e50;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #34495e;
+        }
+
+        .sidebar-header {
+            padding: 15px;
+            background: #34495e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2c3e50;
+        }
+
+        .sidebar-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+
+        .new-tab-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .new-tab-btn:hover {
+            background: #2980b9;
+        }
+
+        .tabs-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 5px;
+        }
+
+        .tab-item {
+            background: #34495e;
+            padding: 12px;
+            margin: 5px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tab-item:hover {
+            background: #415566;
+        }
+
+        .tab-item.active {
+            background: #3498db;
+        }
+
+        .tab-title {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 13px;
+        }
+
+        .close-tab-btn {
+            background: transparent;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 2px 6px;
+            margin-left: 8px;
+            border-radius: 3px;
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .close-tab-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #ecf0f1;
+        }
+
+        /* Navigation Bar */
+        .nav-bar {
+            background: white;
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .nav-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: #2980b9;
+        }
+
+        .nav-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        .url-bar {
+            flex: 1;
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .url-bar:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        /* Browser View Container */
+        .browser-container {
+            flex: 1;
+            position: relative;
+            background: white;
+        }
+
+        .webview-container {
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+
+        .webview-container.active {
+            display: block;
+        }
+
+        webview {
+            width: 100%;
+            height: 100%;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            color: #7f8c8d;
+        }
+
+        .empty-state h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="tabs-sidebar">
+        <div class="sidebar-header">
+            <h2>Nova Browser</h2>
+            <button class="logout-btn" id="logoutBtn">Logout</button>
+        </div>
+        <button class="new-tab-btn" id="newTabBtn">+ New Tab</button>
+        <div class="tabs-list" id="tabsList"></div>
+    </div>
+
+    <div class="main-content">
+        <div class="nav-bar">
+            <button class="nav-btn" id="backBtn">←</button>
+            <button class="nav-btn" id="forwardBtn">→</button>
+            <button class="nav-btn" id="refreshBtn">⟳</button>
+            <input type="text" class="url-bar" id="urlBar" placeholder="Enter URL...">
+            <button class="nav-btn" id="goBtn">Go</button>
+        </div>
+
+        <div class="browser-container" id="browserContainer">
+            <div class="empty-state" id="emptyState">
+                <h2>Welcome to Nova Browser</h2>
+                <p>Click "+ New Tab" to start browsing</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="browser.js"></script>
+</body>
+</html>
